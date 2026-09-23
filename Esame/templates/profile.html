@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}
+My Profile - Red Scale
+{% endblock %}
+
+{% block active_profile %}
+active
+{% endblock %}
+
+{% block content %}
+<div class="col-12 mb-4">
+  <div class="card shadow-sm border-0 bg-dark text-white">
+    <div class="card-body d-flex align-items-center gap-3 p-4">
+      <div class="cult-avatar">
+        <i class="bi bi-person-fill"></i>
+      </div>
+      <div>
+        <h2 class="mb-0 fw-bold">{{ current_user.name }}</h2>
+        <p class="mb-0 text-light fs-5">
+          {% if current_user.priority == 0%}
+          <i class="bi bi-award-fill text-warning"></i>
+          Role: <span class="text-capitalize">{% if current_user.role == 1 %} Warrior {% elif current_user.role == 2%}
+            Mage {% else %} Healer {% endif %}</span>
+          {% endif %}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if current_user.priority == 1 %}
+<div class="col-12">
+  <h3 class="mb-3"><i class="bi bi-journal-bookmark-fill"></i> Scheduled Quest Sessions</h3>
+  <p class="text-muted">Manage your weekly program and view participation statistics.</p>
+
+  {% if sessions %}
+  <div class="row row-cols-1 g-4">
+    {% for session in sessions %}
+    <div class="col">
+      <div class="card shadow-sm border-secondary">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+          <h5 class="mb-0 text-primary fw-bold">{{ session.title }}</h5>
+          <span class="cult-badge badge-dark">{{ session.day }} - {{ session.time }}</span>
+        </div>
+        
+        <div class="card-body row">
+          <div class="col-md-5 border-end">
+            <p><i class="bi bi-geo-alt-fill text-danger"></i> <strong>Location:</strong> {{ session.location }}</p>
+            
+            <div class="mt-3">
+              {% if session.total_participants > 0 %}
+              <button class="btn-cult btn-cult-outline btn-cult-sm" disabled title="Cannot modify: adventurers have joined">
+                <i class="bi bi-lock-fill"></i> Locked (Has Participants)
+              </button>
+
+              {% elif session.time_locked %}
+              <button class="btn-cult btn-cult-outline btn-cult-sm" disabled title="Cannot modify: starts in less than 8 hours">
+                <i class="bi bi-clock-history"></i> Locked (Starts Soon)
+              </button>
+
+              {% else %}
+              <a href="{{ url_for('edit_session', session_id=session.session_id) }}" class="btn-cult btn-cult-secondary btn-cult-sm">
+                <i class="bi bi-pencil"></i> Edit
+              </a>
+              <a href="{{ url_for('delete_session', session_id=session.session_id) }}"
+                class="btn-cult btn-cult-danger-outline btn-cult-sm">
+                <i class="bi bi-trash"></i> Cancel
+              </a>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="col-md-7 ps-md-4 mt-3 mt-md-0">
+            <h6 class="fw-bold"><i class="bi bi-bar-chart-fill"></i> Session Statistics</h6>
+            <ul class="list-unstyled mb-0 small">
+              <li class="mb-1">
+                <strong>Total Reserved Places:</strong> 
+                <span class="cult-badge badge-gold">{{ session.total_participants }}</span>
+              </li>
+              
+              <li class="mb-2">
+                <strong>Most Requested Role:</strong> 
+                <span class="cult-badge badge-ash">{{ session.most_requested_role }}</span>
+              </li>
+
+              <li class="mt-2 text-muted"><strong>Remaining Places:</strong></li>
+              <li>
+                Warrior: <span class="cult-badge badge-ash">{{ session.rem_warrior }}</span> |
+                Mage: <span class="cult-badge badge-ash">{{ session.rem_mage }}</span> |
+                Healer: <span class="cult-badge badge-ash">{{ session.rem_healer }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="alert alert-info">You have not scheduled any sessions yet.</div>
+  {% endif %}
+</div>
+
+{% elif current_user.priority == 0 %}
+<div class="col-12">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="mb-0"><i class="bi bi-shield-sword"></i> My Participations</h3>
+    <span class="cult-badge badge-ash">{{ participations|length }} / 3 Quests Joined</span>
+  </div>
+
+  {% if participations %}
+  <div class="row row-cols-1 row-cols-lg-2 g-3">
+    {% for part in participations %}
+    <div class="col">
+      <div class="card shadow-sm h-100 border-primary">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+          <strong>{{ part.title }}</strong>
+        </div>
+        <div class="card-body">
+          <div class="d-flex justify-content-between mb-3">
+            <div>
+              <p class="mb-1"><i class="bi bi-calendar-event"></i> <strong>Day:</strong> {{ part.day }}</p>
+              <p class="mb-1"><i class="bi bi-clock"></i> <strong>Time:</strong> {{ part.time }}</p>
+              <p class="mb-1"><i class="bi bi-geo-alt-fill text-danger"></i> <strong>Location:</strong> {{ part.location }}</p>
+            </div>
+            <div class="text-end">
+              <small class="text-muted">{{ part.places }} Reserved Place(s)</small>
+            </div>
+          </div>
+
+          <hr>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted"><i class="bi bi-info-circle"></i> Cancellable up to 8 hours before start.</small>
+            <a href="{{ url_for('cancel_participation', part_id=part.part_id) }}" class="btn-cult btn-cult-danger btn-cult-sm"
+              onclick="return confirm('Are you sure you want to cancel this participation?');">
+              Cancel
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="alert alert-warning text-center p-5">
+    <h5>You haven't joined any quests yet!</h5>
+    <p>The guild needs your help. Browse the Quest Board and sign up for an adventure.</p>
+    <a href="{{ url_for('all_quests') }}" class="btn-cult btn-cult-primary mt-2">Go to Quest Board</a>
+  </div>
+  {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}

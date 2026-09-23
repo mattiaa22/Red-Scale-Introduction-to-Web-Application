@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Edit Session - Red Scale
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+  <div class="col-12 col-md-8 col-lg-6">
+    <div class="card shadow-sm border-primary">
+      <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h4 class="mb-0"><i class="bi bi-pencil-square"></i> Edit Scheduled Session</h4>
+      </div>
+      
+      <div class="card-body p-4">
+        <p class="text-muted mb-4">Modify the schedule and location for this session. Remember that you can only edit sessions that have no registered adventurers.</p>
+        
+        <form action="{{ url_for('edit_session', session_id=session.id) }}" method="POST">
+          
+          <div class="mb-3">
+            <label for="day" class="form-label fw-bold"><i class="bi bi-calendar-event"></i> Day of the week</label>
+            <select class="form-select" id="day" name="day" required>
+              <option value="Monday" {% if session.day == 'Monday' %}selected{% endif %}>Monday</option>
+              <option value="Tuesday" {% if session.day == 'Tuesday' %}selected{% endif %}>Tuesday</option>
+              <option value="Wednesday" {% if session.day == 'Wednesday' %}selected{% endif %}>Wednesday</option>
+              <option value="Thursday" {% if session.day == 'Thursday' %}selected{% endif %}>Thursday</option>
+              <option value="Friday" {% if session.day == 'Friday' %}selected{% endif %}>Friday</option>
+              <option value="Saturday" {% if session.day == 'Saturday' %}selected{% endif %}>Saturday</option>
+              <option value="Sunday" {% if session.day == 'Sunday' %}selected{% endif %}>Sunday</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="time" class="form-label fw-bold"><i class="bi bi-clock"></i> Time</label>
+            <input type="time" class="form-control" id="time" name="time" value="{{ session.time }}" required>
+          </div>
+
+          <div class="mb-4">
+            <label for="location" class="form-label fw-bold"><i class="bi bi-geo-alt-fill text-danger"></i> Location</label>
+            <input type="text" class="form-control" id="location" name="location" value="{{ session.location }}" placeholder="e.g. Guild Hall, Tavern, etc." required>
+          </div>
+
+          <hr>
+
+          <div class="d-flex justify-content-between mt-4">
+            <a href="{{ url_for('profile') }}" class="btn-cult btn-cult-outline">
+              <i class="bi bi-arrow-left"></i> Cancel
+            </a>
+            <button type="submit" class="btn-cult btn-cult-primary">
+              <i class="bi bi-save"></i> Save Changes
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Schedule a Session
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4 mb-5">
+    <div class="col-12 col-md-8 col-lg-6">
+        
+        <div class="text-center mb-4">
+            <h2 class="fw-bold text-primary"><i class="bi bi-calendar-plus-fill"></i> Schedule a Quest Session</h2>
+            <p class="text-muted">Post a new adventure on the Hideout's notice board.</p>
+        </div>
+
+        <div class="card shadow-sm border-0 bg-body-tertiary">
+            <div class="card-body p-4">
+                
+                <form action="{{ url_for('new_session') }}" method="POST">
+                    
+                    <div class="mb-4">
+                        <label for="quest_id" class="form-label fw-bold">Select Quest</label>
+                        <select class="form-select" id="quest_id" name="quest_id" required>
+                            <option value="" disabled selected>Choose a quest from the archive...</option>
+                            {% for quest in quests %}
+                                <option value="{{ quest.id }}">{{ quest.title }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">The base adventure to be scheduled.</div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-6 mb-3 mb-sm-0">
+                            <label for="day" class="form-label fw-bold">Day of the Week</label>
+                            <select class="form-select" id="day" name="day" required>
+                                <option value="" disabled selected>Select day</option>
+                                <option value="Monday">Monday</option>
+                                <option value="Tuesday">Tuesday</option>
+                                <option value="Wednesday">Wednesday</option>
+                                <option value="Thursday">Thursday</option>
+                                <option value="Friday">Friday</option>
+                                <option value="Saturday">Saturday</option>
+                                <option value="Sunday">Sunday</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-sm-6">
+                            <label for="time" class="form-label fw-bold">Starting Time</label>
+                            <input type="time" class="form-control" id="time" name="time" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="location" class="form-label fw-bold">Location</label>
+                        <input type="text" class="form-control" id="location" name="location" 
+                               placeholder="e.g. Dungeon Hall, Enchanted Forest" required minlength="3" maxlength="50">
+                        <div class="form-text">Where should the party gather?</div>
+                    </div>
+
+                    <button type="submit" class="btn-cult btn-cult-primary btn-cult-block fw-bold">
+                        <i class="bi bi-pin-angle-fill"></i> Pin to Quest Board
+                    </button>
+                    
+                </form>
+                
+                <hr class="my-4">
+                
+                <div class="text-center">
+                    <a href="{{ url_for('profile') }}" class="btn-cult btn-cult-secondary btn-cult-sm">
+                        <i class="bi bi-arrow-left"></i> Back to Profile
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

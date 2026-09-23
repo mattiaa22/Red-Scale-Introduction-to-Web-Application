@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}
+All Quests - Guild Archive
+{% endblock %}
+
+{% block active_quests %}
+active
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2>RSGuild Quests Archive</h2>
+</div>
+
+<div class="row row-cols-1 g-4">
+  {% for quest in quests %}
+  <div class="col-4">
+    <div class="quest-card card h-100 shadow-sm hidden-card">
+      <div class="row g-0 h-100">
+        <div class="col-md-4">
+          <img src="{{ url_for('static', filename='images/' ~ quest.img) }}" 
+               class="img-fluid rounded-start h-100 object-fit-cover" 
+               alt="{{ quest.title }}">
+        </div>
+        <div class="col-md-8">
+          <div class="card-body d-flex flex-column h-100">
+            <h5 class="card-title quest-title fw-bold text-primary">{{ quest.title }}</h5>
+            
+            <p class="card-text flex-grow-1">{{ quest.description }}</p>
+            
+            <p class="card-text mb-2">
+              <small class="text-body-secondary fw-semibold">
+                <i class="bi bi-clock"></i> {{ quest.duration }} min &nbsp;|&nbsp; 
+                <i class="bi bi-tag-fill"></i> {{ quest.type | capitalize }} &nbsp;|&nbsp; 
+                <i class="bi bi-exclamation-triangle-fill"></i> {{ quest.difficulty | capitalize }}
+              </small>
+            </p>
+            
+            <div>
+              <a href="{{ url_for('quest_detail', quest_id=quest.id) }}" class="btn-cult btn-cult-secondary btn-cult-sm mt-2">
+                View Available Sessions <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="col-12">
+    <div class="alert alert-info">
+      The guild archive is currently empty. No quests have been created yet.
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

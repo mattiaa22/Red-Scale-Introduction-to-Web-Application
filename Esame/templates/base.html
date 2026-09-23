@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}The Red Scale{% endblock %}</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css') }}">
+  <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+</head>
+<body class="cult-layout">
+
+  <div class="cult-container">
+    <header class="cult-header">
+      <a href="{{ url_for('home') }}" class="cult-brand">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="The Red Scale Logo">
+        <span>The Red Scale</span>
+      </a>
+
+      <ul class="cult-auth-menu">
+        {% if not current_user.is_authenticated %}
+        <li><a href="{{ url_for('login') }}" class="btn-cult btn-cult-primary btn-cult-sm">Login</a></li>
+        <li><a href="{{ url_for('signup') }}" class="btn-cult btn-cult-secondary btn-cult-sm">Register</a></li>
+        {% endif %}
+        
+        {% if current_user.is_authenticated %}
+          {% if current_user.priority != 2 %}
+            <li>
+                <a href="{{ url_for('profile') }}" class="cult-user-link">
+                    <i class="bi bi-person-circle"></i> {{ current_user.name }}
+                </a>
+            </li>
+          {% elif current_user.priority == 2 %}
+            <li>
+                <a href="{{ url_for('council_dashboard') }}" class="cult-user-link">
+                    <i class="bi bi-person-circle"></i> {{ current_user.name }}
+                </a>
+            </li>
+          {% endif %}
+        <li><a href="{{ url_for('logout') }}" class="btn-cult btn-cult-danger btn-cult-sm">Logout</a></li>
+        {% endif %}
+      </ul>
+    </header>
+
+    <div class="cult-flash-messages">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{category}} alert-dismissible fade show cult-alert" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+    </div>
+
+    <nav class="navbar navbar-expand-lg cult-navbar">
+      <div class="container-fluid">
+        <span class="navbar-brand d-lg-none cult-mobile-title">Menu</span>
+        <button class="navbar-toggler cult-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <i class="bi bi-list"></i>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav cult-nav-links">
+            <li class="nav-item">
+              <a class="nav-link {% block active_home %}{% endblock %}" href="{{ url_for('home') }}">Hideout</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% block active_all_quests %}{% endblock %}" href="{{ url_for('all_quests') }}">Quests</a>
+            </li>
+            
+            {% if current_user.is_authenticated %}
+                {% if current_user.priority == 1 %}
+                <li class="nav-item">
+                  <a class="nav-link {% block active_new_quest %}{% endblock %}" href="{{ url_for('new_quest') }}">Create New Quest</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% block active_new_session %}{% endblock %}" href="{{ url_for('new_session') }}">Schedule Session</a>
+                </li>
+                {% endif %}
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="cult-main-content">
+      {% block content %}
+      {% endblock %}
+    </main>
+  </div>
+
+  <footer class="cult-footer">
+    <div class="cult-footer-inner">
+      <div class="cult-copyright">
+        <span>© 2026 The Red Scale. <i>Sub umbra florens.</i></span>
+      </div>
+      <div class="cult-footer-nav">
+        <ul>
+          <li><a href="{{ url_for('home') }}">Hideout (Home)</a></li>
+          <li><a href="{{ url_for('all_quests') }}">Guild Quests</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>

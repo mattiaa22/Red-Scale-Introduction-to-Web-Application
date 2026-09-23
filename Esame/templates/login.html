@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Hideout Entrance - Login
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4 mb-5">
+  <div class="col-12 col-md-8 col-lg-5">
+    
+    <div class="text-center mb-4">
+      <h2 class="fw-bold text-primary"><i class="bi bi-door-open-fill"></i> Enter the Hideout</h2>
+      <p class="text-muted">Log in to your account, your master need your ability</p>
+    </div>
+
+    <div class="card shadow-sm border-0 bg-body-tertiary">
+      <div class="card-body p-4">
+        
+        <form action="{{ url_for('authenticate') }}" method="POST">
+
+          <div class="mb-3">
+            <label for="email" class="form-label fw-bold">Email Address</label>
+            <input type="email" class="form-control" name="email" id="email" 
+                   placeholder="Enter your registered email" required />
+          </div>
+
+          <div class="mb-4">
+            <label for="password" class="form-label fw-bold">Password</label>
+            <input type="password" class="form-control" name="password" id="password" 
+                   placeholder="Enter your password" required />
+          </div>
+
+          <button type="submit" class="btn-cult btn-cult-primary btn-cult-block fw-bold">
+            <i class="bi bi-box-arrow-in-right"></i> Log In
+          </button>
+          
+        </form>
+        
+        <hr class="my-4">
+        
+        <div class="text-center">
+          <p class="small text-muted mb-0">Wanna be a Red Scale?</p>
+          <a href="{{ url_for('signup') }}" class="btn-cult btn-cult-secondary btn-cult-sm mt-2">Register as Adventurer</a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Join the Guild - Registration
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4 mb-5">
+    <div class="col-12 col-md-8 col-lg-5">
+
+        <div class="text-center mb-4">
+            <h2 class="fw-bold text-primary"><i class="bi bi-person-plus-fill"></i>Become a new Red Scale</h2>
+            <p class="text-muted">Tell us about you and stay ready to take the black!</p>
+        </div>
+
+        <div class="card shadow-sm border-0 bg-body-tertiary">
+            <div class="card-body p-4">
+
+                <form action="{{ url_for('register') }}" method="POST">
+
+                    <div class="mb-3">
+                        <label for="name" class="form-label fw-bold">Adventurer Name</label>
+                        <input type="text" class="form-control" name="name" id="name"
+                            placeholder="Enter your name" minlength="3" maxlength="30"
+                            pattern="[A-Za-z0-9 ]{3,30}"
+                            title="Only letters, numbers, and spaces allowed (3-30 characters)" required />
+                    </div>
+
+                    <label for="role" class="form-label fw-bold">Adventurer Role</label>
+                    <select class="form-select mb-3" aria-label="Default select example" id="role" name="role">
+                        <option selected>Chose your role</option>
+                        <option value="1">Warrior</option>
+                        <option value="2">Mage</option>
+                        <option value="3">Healer</option>
+                    </select>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-bold">Email Address</label>
+                        <input type="email" class="form-control" name="email" id="email"
+                            placeholder="Enter your email" required />
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="password" class="form-label fw-bold">Password</label>
+                        <input type="password" class="form-control" name="password" id="password"
+                            placeholder="Choose a strong password" minlength="6" required />
+                    </div>
+
+                    <button type="submit" class="btn-cult btn-cult-primary btn-cult-block fw-bold">
+                        <i class="bi bi-shield-check"></i> Take the black!
+                    </button>
+
+                </form>
+
+                <hr class="my-4">
+
+                <div class="text-center">
+                    <p class="small text-muted mb-0">Already a RS?</p>
+                    <a href="{{ url_for('login') }}" class="btn-cult btn-cult-secondary btn-cult-sm mt-2">Take me to the shadow slip</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

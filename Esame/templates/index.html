@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Guild Board - The Red Scale
+{% endblock %}
+
+{% block content %}
+<section class="cult-board-hero">
+  <h1><i class="bi bi-geo-alt-fill cult-icon-red"></i> The Sanctorum Board</h1>
+  <p>Browse the rites and claim your next shadow pact.</p>
+</section>
+
+<div class="cult-filter-panel">
+  <form action="{{ url_for('home') }}" method="GET" class="cult-filter-form">
+    
+    <div class="cult-form-group">
+      <label for="day" class="cult-label"><i class="bi bi-calendar-week"></i> Cycle (Day)</label>
+      <select name="day" id="day" class="cult-select">
+        <option value="">All Cycles</option>
+        <option value="Monday" {% if current_filters.day == 'Monday' %}selected{% endif %}>Monday</option>
+        <option value="Tuesday" {% if current_filters.day == 'Tuesday' %}selected{% endif %}>Tuesday</option>
+        <option value="Wednesday" {% if current_filters.day == 'Wednesday' %}selected{% endif %}>Wednesday</option>
+        <option value="Thursday" {% if current_filters.day == 'Thursday' %}selected{% endif %}>Thursday</option>
+        <option value="Friday" {% if current_filters.day == 'Friday' %}selected{% endif %}>Friday</option>
+        <option value="Saturday" {% if current_filters.day == 'Saturday' %}selected{% endif %}>Saturday</option>
+        <option value="Sunday" {% if current_filters.day == 'Sunday' %}selected{% endif %}>Sunday</option>
+      </select>
+    </div>
+    
+    <div class="cult-form-group">
+      <label for="type" class="cult-label"><i class="bi bi-flag-fill"></i> Nature</label>
+      <select name="type" id="type" class="cult-select">
+        <option value="">All Natures</option>
+        <option value="Combat" {% if current_filters.type == 'Combat' %}selected{% endif %}>Combat</option>
+        <option value="Exploration" {% if current_filters.type == 'Exploration' %}selected{% endif %}>Exploration</option>
+        <option value="Puzzle" {% if current_filters.type == 'Puzzle' %}selected{% endif %}>Puzzle</option>
+        <option value="Stealth" {% if current_filters.type == 'Stealth' %}selected{% endif %}>Stealth</option>
+        <option value="Magic" {% if current_filters.type == 'Magic' %}selected{% endif %}>Magic</option>
+        <option value="Survival" {% if current_filters.type == 'Survival' %}selected{% endif %}>Survival</option>
+      </select>
+    </div>
+    
+    <div class="cult-form-group">
+      <label for="difficulty" class="cult-label"><i class="bi bi-star-fill cult-text-gold"></i> Peril</label>
+      <select name="difficulty" id="difficulty" class="cult-select">
+        <option value="">All Perils</option>
+        <option value="easy" {% if current_filters.difficulty == 'easy' %}selected{% endif %}>Initiate (Easy)</option>
+        <option value="medium" {% if current_filters.difficulty == 'medium' %}selected{% endif %}>Adept (Medium)</option>
+        <option value="hard" {% if current_filters.difficulty == 'hard' %}selected{% endif %}>Zealot (Hard)</option>
+        <option value="legendary" {% if current_filters.difficulty == 'legendary' %}selected{% endif %}>Ascended (Legendary)</option>
+      </select>
+    </div>
+
+    <div class="cult-form-group">
+      <label for="role" class="cult-label"><i class="bi bi-person-badge"></i> Required Blood</label>
+      <select name="role" id="role" class="cult-select">
+        <option value="">Any Bloodline</option>
+        <option value="1" {% if current_filters.role == '1' %}selected{% endif %}>Vanguard (Warrior)</option>
+        <option value="2" {% if current_filters.role == '2' %}selected{% endif %}>Arcanist (Mage)</option>
+        <option value="3" {% if current_filters.role == '3' %}selected{% endif %}>Mender (Healer)</option>
+      </select>
+    </div>
+    
+    <div class="cult-filter-actions">
+      <button type="submit" class="btn-cult btn-cult-primary btn-cult-block"><i class="bi bi-search"></i> Scry</button>
+    </div>
+  </form>
+  
+  {% if current_filters.day or current_filters.type or current_filters.difficulty or current_filters.role %}
+    <div class="cult-clear-filters">
+      <a href="{{ url_for('home') }}" class="btn-cult btn-cult-outline btn-cult-sm"><i class="bi bi-x-circle"></i> Sever Filters</a>
+    </div>
+  {% endif %}
+</div>
+
+<h3 class="cult-section-title"><i class="bi bi-journal-text"></i> The Book of Pacts</h3>
+
+{% if sessions %}
+  <div class="cult-sessions-grid">
+    {% for session in sessions %}
+    <div class="cult-board-card">
+      <div class="cult-board-card-header">
+        <span class="cult-badge badge-outline">{{ session.day }} - {{ session.time }}</span>
+        <span class="cult-badge 
+          {% if session.difficulty == 'easy' %} badge-ash
+          {% elif session.difficulty == 'medium' %} badge-gold
+          {% else %} badge-red {% endif %}">
+          {{ session.difficulty | capitalize }}
+        </span>
+      </div>
+      
+      <div class="cult-board-card-body">
+        <h5 class="cult-board-card-title">{{ session.title }}</h5>
+        <p class="cult-board-card-text"><i class="bi bi-geo-alt"></i> {{ session.location }}</p>
+        <p class="cult-board-card-type"><span class="cult-badge badge-dark">{{ session.type }}</span></p>
+      </div>
+      
+      <div class="cult-board-card-actions">
+        <a href="{{ url_for('quest_detail', quest_id=session.quest_id) }}" class="btn-cult btn-cult-secondary btn-cult-block">
+          Inspect Ritual
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="cult-empty-state">
+    <i class="bi bi-search"></i>
+    <h4>The Void Answers</h4>
+    <p>No rites match your scrying. Adjust your vision or await new decrees.</p>
+  </div>
+{% endif %}
+{% endblock %}

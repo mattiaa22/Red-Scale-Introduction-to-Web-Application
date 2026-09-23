@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ quest.title }} - Quest Details
+{% endblock %}
+
+{% block content %}
+<div class="col-12 col-lg-5 mb-4">
+  <div class="card shadow-sm border-0 h-100">
+    <img src="{{ url_for('static', filename='images/' ~ quest.img) }}" class="card-img-top cult-quest-image" alt="{{ quest.title }}">
+    
+    <div class="card-body">
+      <h2 class="card-title fw-bold text-primary">{{ quest.title }}</h2>
+      
+      <div class="d-flex flex-wrap gap-2 mb-3 mt-2">
+        <span class="cult-badge badge-ash"><i class="bi bi-clock"></i> {{ quest.duration }} min</span>
+        <span class="cult-badge badge-ash"><i class="bi bi-tag-fill"></i> {{ quest.type | capitalize }}</span>
+        <span class="cult-badge badge-gold"><i class="bi bi-exclamation-triangle-fill"></i> {{ quest.difficulty | capitalize }}</span>
+      </div>
+
+      <h5 class="mt-4">Description</h5>
+      <p class="card-text text-muted">{{ quest.description }}</p>
+
+      <div class="mt-4">
+        <a href="{{ url_for('all_quests') }}" class="btn-cult btn-cult-outline">
+          <i class="bi bi-arrow-left"></i> Back to Quest Board
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-12 col-lg-7">
+  <h3 class="mb-3"><i class="bi bi-calendar-check"></i> Available Sessions</h3>
+  
+  {% if sessions %}
+    <div class="row row-cols-1 g-3">
+    {% for session in sessions %}
+      <div class="col">
+        <div class="card shadow-sm border-secondary">
+          
+          <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <strong>{{ session.day }}</strong>
+            <span><i class="bi bi-clock-history"></i> {{ session.time }}</span>
+          </div>
+          
+          <div class="card-body">
+            <p class="card-text mb-2">
+              <i class="bi bi-geo-alt-fill text-danger"></i> <strong>Location:</strong> {{ session.location }}
+            </p>
+            
+            <hr>
+            
+            {% if not current_user.is_authenticated %}
+              <div class="alert alert-warning py-2 mb-0">
+                <i class="bi bi-info-circle"></i> You must <a href="{{ url_for('login') }}" class="alert-link">log in</a> to join this session.
+              </div>
+            {% elif current_user.priority == 1 %}
+              <div class="alert alert-secondary py-2 mb-0">
+                <i class="bi bi-shield-slash"></i> Only adventurers can join a session.
+              </div>
+            {% else %}
+              <form action="{{ url_for('join_session', session_id=session.id) }}" method="POST" class="row gx-2 align-items-end">
+                <div class="col-sm-5 mb-2 mb-sm-0">
+                  <strong for="party_role_{{ session.id }}" class="form-label small fw-bold"> Your role:</strong> <br>
+                  <label> {% if current_user.role == 1 %} Warrior {% elif current_user.role == 2%} Mage {% else %} Healer {% endif %} </label>
+                </div>
+                
+                <div class="col-sm-4 mb-2 mb-sm-0">
+                  <label for="places_{{ session.id }}" class="form-label small fw-bold">Places (Max 2)</label>
+                  <input type="number" class="form-control form-control-sm" id="places_{{ session.id }}" name="places" min="1" max="2" value="1" required>
+                </div>
+            
+                <div class="col-sm-3">
+                  <button type="submit" class="btn-cult btn-cult-primary btn-cult-sm btn-cult-block">Join <i class="bi bi-check-lg"></i></button>
+                </div>
+              </form>
+              <small class="text-muted d-block mt-2">Both places will be assigned to your role category.</small>
+            {% endif %}
+            
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info">
+      No sessions are currently scheduled for this quest.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

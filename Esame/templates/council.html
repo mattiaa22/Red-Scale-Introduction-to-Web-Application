@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Guild Council Dashboard - The Red Scale
+{% endblock %}
+
+{% block content %}
+<section class="cult-dashboard-header">
+  <h1><i class="bi bi-bank"></i> Inner Sanctum Archives</h1>
+  <p>Overview of our shadow operations, initiates, and pacts.</p>
+</section>
+
+<div class="cult-stats-grid">
+  <div class="cult-stat-card border-gold">
+    <h3>{{ stats.tot_adventurers }}</h3>
+    <small>Sworn Initiates</small>
+  </div>
+  <div class="cult-stat-card border-red">
+    <h3>{{ stats.tot_quests }}</h3>
+    <small>Total Pacts (Quests)</small>
+  </div>
+  <div class="cult-stat-card border-gold">
+    <h3>{{ stats.tot_sessions }}</h3>
+    <small>Active Rituals</small>
+  </div>
+  <div class="cult-stat-card border-red">
+    <h3>{{ stats.tot_participations }}</h3>
+    <small>Blood Ties (Participations)</small>
+  </div>
+</div>
+
+<div class="cult-info-grid">
+  <div class="cult-panel">
+    <div class="cult-panel-header">
+      <i class="bi bi-pie-chart-fill"></i> Ranks & Roles Assigned
+    </div>
+    <div class="cult-panel-body">
+      <ul class="cult-list">
+        <li>Vanguards (Warriors) <span class="cult-badge">{{ stats.roles[1] }}</span></li>
+        <li>Arcanists (Mages) <span class="cult-badge">{{ stats.roles[2] }}</span></li>
+        <li>Menders (Healers) <span class="cult-badge">{{ stats.roles[3] }}</span></li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="cult-panel">
+    <div class="cult-panel-header">
+      <i class="bi bi-trophy-fill"></i> Cult Highlights
+    </div>
+    <div class="cult-panel-body">
+      <p class="cult-highlight-text">
+        <strong>Most Demanded Pact:</strong> 
+        <span class="cult-text-gold">{{ stats.pop_type | capitalize }}</span>
+      </p>
+      <p class="cult-highlight-text">
+        <strong>Heaviest Convergence (Busiest Session):</strong><br>
+        <span class="cult-text-ash">{{ stats.top_session }}</span>
+      </p>
+    </div>
+  </div>
+</div>
+
+<h3 class="cult-section-title"><i class="bi bi-people-fill"></i> The Registry of Souls</h3>
+<div class="cult-table-wrapper">
+  <table class="cult-table">
+    <thead>
+      <tr>
+        <th>True Name</th>
+        <th>Ethereal Contact (Email)</th>
+        <th class="text-center">Ties to the Guild</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for adv in adventurers %}
+      <tr>
+        <td class="cult-fw-bold">{{ adv.name }}</td>
+        <td>{{ adv.email }}</td>
+        <td class="text-center"><span class="cult-badge badge-dark">{{ adv.total_participations }}</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<h3 class="cult-section-title"><i class="bi bi-calendar3"></i> Impending Convergences (Weekly Sessions)</h3>
+<div class="cult-sessions-list">
+  {% for session in sessions %}
+  <div class="cult-session-card">
+    <div class="cult-session-header">
+      <h5>{{ session.title }}</h5>
+      <span class="cult-badge badge-outline">{{ session.day }} - {{ session.time }}</span>
+    </div>
+    <div class="cult-session-body">
+      <div class="cult-session-left">
+        <p><strong><i class="bi bi-geo-alt-fill cult-icon-red"></i> Location:</strong> {{ session.location }}</p>
+        <p><strong>Nature:</strong> {{ session.type | capitalize }}</p>
+        <p><strong>Peril Level:</strong> <span class="cult-text-gold">{{ session.difficulty | capitalize }}</span></p>
+      </div>
+      <div class="cult-session-right">
+        <h6>Convergence Details</h6>
+        <p class="cult-mb-1">Bound Souls Registered: <strong class="cult-text-red">{{ session.total_participants }}</strong></p>
+        <p class="cult-label-small">Roles Required for the Ritual:</p>
+        <div class="cult-role-badges">
+          <span class="cult-badge badge-dark">Warrior: {{ session.rem_warrior }}</span>
+          <span class="cult-badge badge-dark">Mage: {{ session.rem_mage }}</span>
+          <span class="cult-badge badge-dark">Healer: {{ session.rem_healer }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
